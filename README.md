@@ -60,9 +60,9 @@ Implementation: `guesuite/zeros.py`.
 
 ### 2) Unfolding (density normalization)
 Given zeros at heights \(t_n\), spacings are unfolded via the standard density factor:
-\[
+$$
 s_n = (t_{n+1}-t_n)\,\frac{\log(t_n/2\pi)}{2\pi},
-\]
+$$
 then normalized so \(\mathbb{E}[s]\approx 1\).
 
 Implementation: `guesuite/stats.py`.
@@ -71,13 +71,13 @@ Implementation: `guesuite/stats.py`.
 We report:
 - **KS vs Poisson** (exponential spacing CDF)
 - **KS vs GUE Wigner surmise** (β=2):
-  \[
+ $$
   P_{\mathrm{GUE}}(s)=\frac{32}{\pi^2}s^2\exp\!\left(-\frac{4}{\pi}s^2\right)
-  \]
+ $$
 - Mean **r-statistic**:
-  \[
+ $$
   r_n=\frac{\min(s_n,s_{n-1})}{\max(s_n,s_{n-1})}.
-  \]
+ $$
 
 ---
 
