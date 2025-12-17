@@ -1,6 +1,6 @@
-# GUE / Poisson spacing experiment
+# Gaussian Unitary Ensemble / Poisson spacing experiment
 
-# GUE Protocol v2 — zeta/prime **spectral rigidity** test suite
+# GUE Protocol v1 — zeta/prime **spectral rigidity** test suite
 
 A small, reproducible experiment suite for one question:
 
