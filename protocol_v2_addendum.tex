@@ -1,0 +1,53 @@
+% Protocol Addendum v2.0 for Book of Recipes
+% Generated: 2025-12-17
+
+\section*{Laboratory Protocol Version 2.0 (Addendum)}
+\textbf{Purpose.} Convert the current document into a reproducible computational experiment by (i) fixing the protocol-level ambiguities and (ii) upgrading the physics/model class to include the global symmetry that is known to drive level repulsion.
+
+\subsection*{A. Patch List (Text / Protocol)}
+\begin{enumerate}
+  \item \textbf{Regularization is analytic-only.} Standardize all language to: \emph{Mellin/Dirichlet continuation + Hadamard finite part / residue extraction}. Remove or demote any remaining Hahn/surreal bookkeeping to a historical note.
+  \item \textbf{Define and enforce $\sigma_0$ everywhere.} In any recipe step that fits a finite-part model
+  \[
+    G(s) \;=\; A \log(s-\sigma_0) + C + o(1),
+  \]
+  explicitly define $\sigma_0$ as \emph{the actual pole location of the analytically continued function $G(s)$}. Never hardcode $\sigma_0=0.5$ unless the constructed $G$ truly has a pole at $0.5$.
+  \item \textbf{Correct the ``pole-at-0.5'' example.} The example $F(s)=\zeta(2s-0.5)$ does \emph{not} have a pole at $s=0.5$ (it has a pole at $s=0.75$). If you want a pole at $0.5$, use either $F(s)=\zeta(2s)$ or $F(s)=\zeta(s+0.5)$ (both have a pole at $s=0.5$ because $\zeta$ has a pole at $1$).
+  \item \textbf{Keep the cyclic-truncation warning as a hard constraint.} Any finite-dimensional shift approximation must be treated as an artifact generator; it cannot be used alone to infer ``bands'' or ``spectra''.
+  \item \textbf{Fix the GUE bulk reference formula.} Use the GUE Wigner surmise (beta=2)
+  \[
+    P_{\mathrm{GUE}}(s)=\frac{32}{\pi^2}s^2\exp\!\left(-\frac{4}{\pi}s^2\right),
+  \]
+  not $\exp(-4s^2/\pi^2)$. (This is a typo-level fix, but it matters for KS/CDF comparisons.)
+\end{enumerate}
+
+\subsection*{B. Patch List (Physics / Model Upgrade)}
+\begin{enumerate}
+  \item \textbf{Add the functional-equation constrained signal.} Implement and use the Riemann--Siegel $Z(t)$ approximation as a model class:
+  \[
+    Z(t)\;\approx\;2\sum_{n\le \sqrt{t/2\pi}} \frac{\cos(t\log n-\theta(t))}{\sqrt{n}},
+    \qquad
+    \theta(t)=\Im\log\Gamma\!\left(\tfrac14+\tfrac{i t}{2}\right)-\frac{t}{2}\log\pi.
+  \]
+  \item \textbf{Ground-truth channel.} Always include the ``full zeta'' baseline via $\zeta(1/2+it)$ mapped back to $Z(t)$ by $Z(t)=\Re\{\zeta(1/2+it)e^{i\theta(t)}\}$.
+  \item \textbf{Baseline channel.} Keep the independent-primes partial Euler product as the expected Poisson baseline.
+\end{enumerate}
+
+\subsection*{C. Test Suite Requirements (Non-negotiable)}
+\begin{enumerate}
+  \item \textbf{Zero-finding is sign-change + bracketing.} Detect sign changes in a dense grid, then refine by bisection (or similar bracketed root-finding). No free-form Newton steps without bracketing.
+  \item \textbf{Unfold spacings.} For zeros at heights $t_n$, use the standard density factor to unfold:
+  \[
+    s_n = (t_{n+1}-t_n)\,\frac{\log(t_n/2\pi)}{2\pi},
+  \]
+  then normalize by sample mean so $\mathbb{E}[s]\approx 1$.
+  \item \textbf{Report both KS-to-Poisson and KS-to-GUE, plus $r$-statistics.} Always include:
+  \[
+    r_n=\frac{\min(s_n,s_{n-1})}{\max(s_n,s_{n-1})}.
+  \]
+  \item \textbf{Negative controls.} At minimum:
+  (i) pseudo-primes jittered around true primes, (ii) phase-randomized Riemann--Siegel sum.
+\end{enumerate}
+
+\subsection*{D. Reference Implementation}
+The accompanying code bundle (\texttt{guesuite/} + \texttt{run\_full\_experiment.py}) implements exactly the three-model comparison, unfolding, KS tests, and the two mandatory negative controls.
